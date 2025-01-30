@@ -19,10 +19,10 @@ from sympy.ntheory import sqrt_mod
 class NTT:
     def __init__(self, poly, M, N, ideal=True, ntt=False, w=None, phi=None):
         """
-        Initialize the parameters for NTT 
+        Initialize the parameters for NTT
         and transfer poly into frequency domain if ntt is True.
         Parameters: mod(modulus), N(NTT points), w(root of unity), phi(square root of unity),
-                    ideal(ideal ring), fft_poly(poly in freq domain). 
+                    ideal(ideal ring), fft_poly(poly in freq domain).
         """
         if ntt:  # poly is in frequency domain
             self.initial_w_ntt(poly, M, N, ideal, w, phi)
@@ -63,10 +63,10 @@ class NTT:
 
     def __mul__(self, other):
         """
-        Multiply in frequency domain. 
+        Multiply in frequency domain.
         """
         assert type(other).__name__ == 'NTT' or type(other).__name__ == 'int', 'type error'
-            
+
 
         if type(other).__name__ == 'int':
             mul_result = self.mulConstant(other)
@@ -118,7 +118,7 @@ class NTT:
         ========
 
         >>> NTT.bitReverse(3, 3) # 3(011)
-        6                        # 6(110)   
+        6                        # 6(110)
         """
         rev_num = 0
 
@@ -140,6 +140,7 @@ class NTT:
         [1, 3, 2, 4]
         """
         _poly = list(poly)
+        _poly = list(np.array(_poly).astype(int))
         for i, coeff in enumerate(_poly):
 
             rev_i = self.bitReverse(i, N_bit)
@@ -189,7 +190,7 @@ class NTT:
     def intt(self):
         """
         Compute IFFT in finite feild.
-        The algorithm is the same as NTT, but it need to change w to w^(-1) 
+        The algorithm is the same as NTT, but it need to change w to w^(-1)
         and multiply N^(-1) for each coefficient of polynomial.
         input: FFT(poly), primitive nth root of unity
         output: polynomial

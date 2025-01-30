@@ -5,6 +5,8 @@ import numpy as np
 import cProfile as cp
 import time
 
+lengthOfInput = 8192
+
 def setup(d, stdev, bits_per_level, P_bits, L):
     primes, total_bits = findPrimes(bits_per_level, d, L)
     special_primes, total_bits = findPrimes(P_bits, d, 1)
@@ -19,19 +21,19 @@ def keyGen(f, h):
     pk = f.publicKeyGen(sk)
     print('-----Switch Key Generation-----')
     swk = f.switchKeyGen(sk)
-    return sk, pk, swk 
+    return sk, pk, swk
 
 def set_timer_profile():
     pr = cp.Profile()
     pr.enable()
     start = time.time()
-    return pr, start  
+    return pr, start
 
 def end_timer_profile(pr, start, filename):
-    cost = time.time() - start 
+    cost = time.time() - start
     pr.disable()
     pr.dump_stats(filename)
-    return cost 
+    return cost
 
 def hex_rep(m):
     binary_str = ''.join(str(bit) for bit in m)
@@ -43,10 +45,10 @@ dec_profile = './profile/decryption.prof'
 l0_mul_profile = './profile/l0_mul.prof'
 l1_mul_profile = './profile/l1_mul.prof'
 add_profile = './profile/add.prof'
-f, primes, P = setup(4096, 3.2, 22, 49, 4)
+f, primes, P = setup(lengthOfInput, 3.2, 22, 49, 4)
 
-# print('-----plaintext-----')
-msg1 = np.random.randint(0, 2, 4096).tolist()
+print('-----plaintext-----')
+msg1 = np.random.randint(0, 2, lengthOfInput).tolist()
 print(hex_rep(msg1))
 pr, start = set_timer_profile()
 
@@ -54,7 +56,7 @@ sk, pk, swk = keyGen(f, 64)
 cost = end_timer_profile(pr, start, key_profile)
 print('Done {0: .3f}s'.format(cost))
 print('-----Encryption-----')
-c1 = Ctxt(4096, 3.2, primes, P, 4)
+c1 = Ctxt(lengthOfInput, 3.2, primes, P, 4)
 
 pr, start = set_timer_profile()
 # message encryption
